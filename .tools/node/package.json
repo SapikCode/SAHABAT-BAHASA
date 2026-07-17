@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "regenerator-runtime": "^0.14.1",
+    "tesseract.js": "^7.0.0"
+  }
+}
