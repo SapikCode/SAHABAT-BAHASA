@@ -131,7 +131,7 @@ export function LoginForm() {
                 autoCorrect="off"
                 className="min-w-0 flex-1 border-0 bg-transparent text-sm outline-none"
                 onChange={(event) => setLoginId(event.target.value)}
-                placeholder="ayambakar"
+                placeholder="nama_pengguna"
                 required
                 type="text"
                 value={loginId}
