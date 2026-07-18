@@ -91,8 +91,8 @@ export function MobileNavDrawer({
           </button>
         </div>
 
-        <div className="border-b border-[#eef0f3] p-4">
-          <div>
+        <div className="shrink-0 border-b border-[#eef0f3] p-4">
+          <div className="flex max-h-[34dvh] min-h-0 flex-col">
             <div className="mb-2 flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-[0.04em] text-[#7c828a]">
                 Riwayat chat
@@ -121,7 +121,7 @@ export function MobileNavDrawer({
                 Memuat riwayat chat...
               </div>
             ) : isLoggedIn ? (
-              <div className="space-y-1">
+              <div className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
                 {conversations.length > 0 ? (
                   conversations.map((conversation) => {
                     const isActive = conversation.id === activeConversationId;
@@ -199,7 +199,7 @@ export function MobileNavDrawer({
           </div>
         </div>
 
-        <nav className="flex-1 space-y-1 p-4">
+        <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto p-4">
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.04em] text-[#7c828a]">
             Menu belajar
           </p>

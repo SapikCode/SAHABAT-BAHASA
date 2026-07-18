@@ -28,7 +28,7 @@ export function ChatHeader({
   onSelectConversation,
 }: ChatHeaderProps) {
   return (
-    <header className="relative z-30 flex h-16 shrink-0 items-center justify-between border-b border-[#eef0f3] bg-white px-4 md:px-6">
+    <header className="relative z-[100] flex h-16 shrink-0 items-center justify-between border-b border-[#eef0f3] bg-white px-4 md:px-6">
       <div className="flex items-center justify-between gap-3">
         <Link className="flex items-center lg:hidden" href="/">
           {/* <img src='logo-sahabat-bahasa.png' className="w-14 h-14" ></img> */}

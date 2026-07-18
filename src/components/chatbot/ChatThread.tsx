@@ -183,7 +183,7 @@ function MessageBubble({
             </button>
 
             {isActionOpen ? (
-              <div className="absolute left-0 top-9 z-20 min-w-36 rounded-2xl border border-[#eef0f3] bg-white p-1 shadow-[0_14px_36px_rgba(10,11,13,0.12)]">
+              <div className="absolute bottom-9 left-0 z-[60] min-w-36 rounded-2xl border border-[#eef0f3] bg-white p-1 shadow-[0_14px_36px_rgba(10,11,13,0.12)]">
                 <button
                   className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold text-[#0a0b0d] transition hover:bg-[#f7f7f7]"
                   onClick={() => {
@@ -253,8 +253,8 @@ function CorrectionModal({
             <p className="text-sm font-bold uppercase tracking-[0.06em] text-[#de990e]">
               Benarkan jawaban
             </p>
-            <h2 className="mt-1 text-lg font-black text-[#0a0b0d]">
-              Tambahkan ke kamus chatbot
+            <h2 className="mt-1 text-lg font-semibold text-[#0a0b0d]">
+              Kata yang anda tambahkan membuat bot semakin pintar
             </h2>
           </div>
           <button
@@ -427,7 +427,7 @@ export function ChatThread({
       {showScrollButton ? (
         <button
           aria-label="Scroll ke pesan terbaru"
-          className="fixed bottom-24 left-1/2 z-40 grid size-10 -translate-x-1/2 place-items-center rounded-full border border-[#dee1e6] bg-white text-[#0a0b0d] shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition hover:border-[#de990e] hover:text-[#de990e] lg:left-[calc(50%+140px)]"
+          className="fixed bottom-24 left-1/2 z-30 grid size-10 -translate-x-1/2 place-items-center rounded-full border border-[#dee1e6] bg-white text-[#0a0b0d] shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition hover:border-[#de990e] hover:text-[#de990e] lg:left-[calc(50%+140px)]"
           onClick={() => scrollToBottom()}
           type="button"
         >
