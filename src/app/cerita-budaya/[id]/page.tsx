@@ -2,11 +2,16 @@ import { ArrowLeft, Clock, Film, Play } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  cultureVideos,
-  getCultureVideoById,
+  cultureVideos as fallbackCultureVideos,
   getCultureVideoHref,
   getCultureVideoThumbnail,
+  type CultureVideo,
+  type CultureVideoCategory,
 } from "@/data/cultureVideos";
+import { createPublicSupabaseClient } from "@/lib/supabase-server";
+import { extractYouTubeId } from "@/lib/youtube";
+
+export const dynamic = "force-dynamic";
 
 type CultureVideoDetailPageProps = {
   params: Promise<{
@@ -14,23 +19,56 @@ type CultureVideoDetailPageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return cultureVideos.map((video) => ({
-    id: video.id,
-  }));
+function normalizeCultureVideo(row: Record<string, unknown>): CultureVideo {
+  const youtubeUrl = String(row.youtube_url ?? "");
+
+  return {
+    id: String(row.slug ?? row.id),
+    title: String(row.title ?? ""),
+    description: String(row.description ?? ""),
+    category: (row.category as CultureVideoCategory) ?? "Sejarah",
+    duration: String(row.duration_label ?? ""),
+    level: "Pemula",
+    youtubeId: extractYouTubeId(youtubeUrl) ?? "",
+    learningPoints: [],
+  };
+}
+
+async function loadCultureVideos(): Promise<CultureVideo[]> {
+  try {
+    const supabase = createPublicSupabaseClient();
+    const { data, error } = await supabase
+      .from("culture_videos")
+      .select(
+        "id,slug,title,description,category,youtube_url,thumbnail_url,duration_label,is_published,created_at",
+      )
+      .eq("is_published", true)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      throw error;
+    }
+
+    return (data ?? []).map((row) =>
+      normalizeCultureVideo(row as Record<string, unknown>),
+    );
+  } catch {
+    return fallbackCultureVideos;
+  }
 }
 
 export default async function CultureVideoDetailPage({
   params,
 }: CultureVideoDetailPageProps) {
   const { id } = await params;
-  const video = getCultureVideoById(id);
+  const videos = await loadCultureVideos();
+  const video = videos.find((item) => item.id === id);
 
   if (!video) {
     notFound();
   }
 
-  const recommendations = cultureVideos
+  const recommendations = videos
     .filter((item) => item.id !== video.id)
     .sort((a, b) => {
       if (a.category === video.category && b.category !== video.category) {

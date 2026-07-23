@@ -61,7 +61,7 @@ export default function AdminPage() {
           Dashboard
         </p>
         <h2 className="mt-2 text-2xl font-black text-[#141414] md:text-3xl">
-          Pusat kelola konten Sahabat Bahasa
+          Pusat kelola konten Kamori
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-6 text-[#6f6659]">
           Admin bisa mengelola kamus chatbot, materi belajar, video budaya,

@@ -4,6 +4,7 @@ import { Drawer } from "vaul";
 import {
   ArrowLeft,
   Check,
+  Loader2,
   MessageSquareQuote,
   Search,
   ShieldCheck,
@@ -12,23 +13,51 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   expressionCategories,
-  expressionItems,
-  expressionSources,
+  expressionSources as fallbackExpressionSources,
   type ExpressionCategory,
+  type ExpressionItem,
 } from "@/data/expressions";
+
+type ExpressionsResponse = {
+  data: ExpressionItem[];
+  sources?: { label: string; url: string }[];
+  source?: "database" | "fallback";
+};
 
 const allCategoriesLabel = "Semua";
 const categoryOptions = [allCategoriesLabel, ...expressionCategories] as const;
 
 export function ExpressionExplorer() {
+  const [expressionItems, setExpressionItems] = useState<ExpressionItem[]>([]);
+  const [expressionSources, setExpressionSources] = useState(
+    fallbackExpressionSources,
+  );
+  const [isLoading, setIsLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<
     ExpressionCategory | typeof allCategoriesLabel
   >(allCategoriesLabel);
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    async function loadExpressions() {
+      try {
+        const response = await fetch("/api/expressions");
+        const payload = (await response.json()) as ExpressionsResponse;
+        setExpressionItems(payload.data ?? []);
+        if (payload.sources) {
+          setExpressionSources(payload.sources);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadExpressions();
+  }, []);
 
   const filteredItems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -45,7 +74,7 @@ export function ExpressionExplorer() {
 
       return matchesQuery && matchesCategory;
     });
-  }, [activeCategory, query]);
+  }, [activeCategory, query, expressionItems]);
 
   const featuredItem = expressionItems[expressionItems.length - 1];
 
@@ -95,10 +124,10 @@ export function ExpressionExplorer() {
               Ungkapan Hari Ini
             </div>
             <p className="mt-4 text-xl font-normal leading-8 text-[#0a0b0d]">
-              {featuredItem.ungkapanTolaki}
+              {featuredItem?.ungkapanTolaki ?? "-"}
             </p>
             <p className="mt-3 text-sm leading-6 text-[#5b616e]">
-              {featuredItem.maknaSingkat}
+              {featuredItem?.maknaSingkat ?? ""}
             </p>
           </div>
         </div>
@@ -232,58 +261,63 @@ export function ExpressionExplorer() {
           <p className="text-sm font-semibold text-[#5b616e]">
             {filteredItems.length} ungkapan ditemukan
           </p>
-          <p className="hidden text-sm text-[#7c828a] sm:block">
-            Data awal, bukan final akademik
-          </p>
         </div>
 
-        <section className="mt-5 grid gap-3 lg:grid-cols-2">
-          {filteredItems.map((item) => (
-            <article
-              className="rounded-[20px] border border-[#dee1e6] bg-white p-5 transition hover:border-[#73a920] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
-              key={item.id}
-            >
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
-                  {item.kategori}
-                </span>
-                <span className="rounded-full bg-[#e5f0f9] px-3 py-1 text-xs font-semibold text-[#1376ba]">
-                  {item.jenis}
-                </span>
-                <span className="rounded-full bg-[#f7f7f7] px-3 py-1 text-xs font-semibold text-[#7c828a]">
-                  {item.sumber}
-                </span>
-              </div>
-
-              <p className="mt-5 text-2xl font-normal leading-9 text-[#0a0b0d]">
-                {item.ungkapanTolaki}
-              </p>
-              <p className="mt-3 text-base font-semibold leading-7 text-[#2d9184]">
-                {item.artiIndonesia}
-              </p>
-
-              <div className="mt-5 border-t border-[#eef0f3] pt-4">
-                <p className="text-sm leading-6 text-[#0a0b0d]">
-                  {item.maknaSingkat}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-[#5b616e]">
-                  {item.konteks}
-                </p>
-              </div>
-            </article>
-          ))}
-        </section>
-
-        {filteredItems.length === 0 ? (
-          <div className="mt-8 rounded-[24px] border border-[#dee1e6] bg-[#f7f7f7] px-5 py-10 text-center">
-            <p className="text-lg font-semibold text-[#0a0b0d]">
-              Belum ada ungkapan yang cocok.
-            </p>
-            <p className="mt-2 text-sm text-[#5b616e]">
-              Coba kata lain atau pilih filter Semua.
-            </p>
+        {isLoading ? (
+          <div className="grid min-h-64 place-items-center">
+            <Loader2 className="h-6 w-6 animate-spin text-[#de990e]" />
           </div>
-        ) : null}
+        ) : (
+          <>
+            <section className="mt-5 grid gap-3 lg:grid-cols-2">
+              {filteredItems.map((item) => (
+                <article
+                  className="rounded-[20px] border border-[#dee1e6] bg-white p-5 transition hover:border-[#73a920] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
+                  key={item.id}
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
+                      {item.kategori}
+                    </span>
+                    <span className="rounded-full bg-[#e5f0f9] px-3 py-1 text-xs font-semibold text-[#1376ba]">
+                      {item.jenis}
+                    </span>
+                    <span className="rounded-full bg-[#f7f7f7] px-3 py-1 text-xs font-semibold text-[#7c828a]">
+                      {item.sumber}
+                    </span>
+                  </div>
+
+                  <p className="mt-5 text-2xl font-normal leading-9 text-[#0a0b0d]">
+                    {item.ungkapanTolaki}
+                  </p>
+                  <p className="mt-3 text-base font-semibold leading-7 text-[#2d9184]">
+                    {item.artiIndonesia}
+                  </p>
+
+                  <div className="mt-5 border-t border-[#eef0f3] pt-4">
+                    <p className="text-sm leading-6 text-[#0a0b0d]">
+                      {item.maknaSingkat}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-[#5b616e]">
+                      {item.konteks}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </section>
+
+            {filteredItems.length === 0 ? (
+              <div className="mt-8 rounded-[24px] border border-[#dee1e6] bg-[#f7f7f7] px-5 py-10 text-center">
+                <p className="text-lg font-semibold text-[#0a0b0d]">
+                  Belum ada ungkapan yang cocok.
+                </p>
+                <p className="mt-2 text-sm text-[#5b616e]">
+                  Coba kata lain atau pilih filter Semua.
+                </p>
+              </div>
+            ) : null}
+          </>
+        )}
 
         <section className="mt-10 rounded-[24px] border border-[#dee1e6] bg-[#f7f7f7] p-5">
           <p className="text-sm font-semibold text-[#0a0b0d]">

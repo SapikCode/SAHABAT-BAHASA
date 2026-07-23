@@ -6,30 +6,52 @@ import {
   Check,
   Clock,
   Film,
+  Loader2,
   Play,
   Search,
   SlidersHorizontal,
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   cultureVideoCategories,
-  cultureVideos,
   getCultureVideoHref,
   getCultureVideoThumbnail,
+  type CultureVideo,
   type CultureVideoCategory,
 } from "@/data/cultureVideos";
+
+type CultureVideosResponse = {
+  data: CultureVideo[];
+  source?: "database" | "fallback";
+};
 
 const allCategoriesLabel = "Semua";
 const categoryOptions = [allCategoriesLabel, ...cultureVideoCategories] as const;
 
 export function CultureVideoExplorer() {
+  const [cultureVideos, setCultureVideos] = useState<CultureVideo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<
     CultureVideoCategory | typeof allCategoriesLabel
   >(allCategoriesLabel);
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    async function loadVideos() {
+      try {
+        const response = await fetch("/api/culture-videos");
+        const payload = (await response.json()) as CultureVideosResponse;
+        setCultureVideos(payload.data ?? []);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadVideos();
+  }, []);
 
   const filteredVideos = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -49,7 +71,7 @@ export function CultureVideoExplorer() {
 
       return matchesQuery && matchesCategory;
     });
-  }, [activeCategory, query]);
+  }, [activeCategory, query, cultureVideos]);
 
   return (
     <main className="min-h-screen bg-white pt-16 text-[#0a0b0d]">
@@ -227,6 +249,12 @@ export function CultureVideoExplorer() {
           </p>
         </div>
 
+        {isLoading ? (
+          <div className="grid min-h-64 place-items-center">
+            <Loader2 className="h-6 w-6 animate-spin text-[#de990e]" />
+          </div>
+        ) : (
+        <>
         <section className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {filteredVideos.map((video) => (
             <Link
@@ -293,6 +321,8 @@ export function CultureVideoExplorer() {
             </p>
           </div>
         ) : null}
+        </>
+        )}
       </section>
     </main>
   );

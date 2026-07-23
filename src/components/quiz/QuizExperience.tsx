@@ -8,16 +8,16 @@ import {
   Check,
   CircleQuestionMark,
   ListChecks,
+  Loader2,
   RotateCcw,
   SlidersHorizontal,
   Trophy,
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   quizCategories,
-  quizQuestions,
   type QuizCategory,
   type QuizLevel,
   type QuizQuestion,
@@ -70,7 +70,14 @@ async function saveQuizResult({
   });
 }
 
+type QuizQuestionsResponse = {
+  data: QuizQuestion[];
+  source?: "database" | "fallback";
+};
+
 export function QuizExperience() {
+  const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<
     QuizCategory | typeof allCategoriesLabel
   >(allCategoriesLabel);
@@ -80,6 +87,20 @@ export function QuizExperience() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
+  useEffect(() => {
+    async function loadQuestions() {
+      try {
+        const response = await fetch("/api/quiz-questions");
+        const payload = (await response.json()) as QuizQuestionsResponse;
+        setQuizQuestions(payload.data ?? []);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadQuestions();
+  }, []);
+
   const filteredQuestions = useMemo(() => {
     return quizQuestions.filter((question) => {
       const matchesCategory =
@@ -88,7 +109,7 @@ export function QuizExperience() {
 
       return matchesCategory && matchesLevel;
     });
-  }, [activeCategory, activeLevel]);
+  }, [activeCategory, activeLevel, quizQuestions]);
 
   const currentQuestion = filteredQuestions[currentIndex] ?? filteredQuestions[0];
   const answeredCount = filteredQuestions.filter(
@@ -181,15 +202,21 @@ export function QuizExperience() {
           }`}
       >
         {stage === "intro" ? (
-          <IntroView
-            activeCategory={activeCategory}
-            activeLevel={activeLevel}
-            filteredQuestions={filteredQuestions}
-            isFilterDrawerOpen={isFilterDrawerOpen}
-            setIsFilterDrawerOpen={setIsFilterDrawerOpen}
-            startQuiz={startQuiz}
-            updateFilters={updateFilters}
-          />
+          isLoading ? (
+            <div className="grid min-h-64 place-items-center">
+              <Loader2 className="h-6 w-6 animate-spin text-[#de990e]" />
+            </div>
+          ) : (
+            <IntroView
+              activeCategory={activeCategory}
+              activeLevel={activeLevel}
+              filteredQuestions={filteredQuestions}
+              isFilterDrawerOpen={isFilterDrawerOpen}
+              setIsFilterDrawerOpen={setIsFilterDrawerOpen}
+              startQuiz={startQuiz}
+              updateFilters={updateFilters}
+            />
+          )
         ) : null}
 
         {stage === "playing" && currentQuestion ? (
@@ -681,10 +708,8 @@ function ReviewView({
                         {question.choices[question.answerIndex]}
                       </span>
                     </p>
+                    <p className=" text-sm text-gray-600 font-semibold">Penjelasan :</p>
                     <p className="text-[#0a0b0d]">{question.explanation}</p>
-                    <p className="rounded-2xl bg-[#f7f7f7] px-4 py-3 text-[#5b616e]">
-                      {question.learningPoint}
-                    </p>
                   </div>
                 </div>
               </div>

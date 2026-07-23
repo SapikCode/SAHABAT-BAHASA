@@ -1,24 +1,45 @@
 "use client";
 
 import { Drawer } from "vaul";
-import { ArrowLeft, BookOpen, Check, SlidersHorizontal, Search, X } from "lucide-react";
+import { ArrowLeft, BookOpen, Check, Loader2, SlidersHorizontal, Search, X } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   vocabularyCategories,
-  vocabularyItems,
   type VocabularyCategory,
+  type VocabularyItem,
 } from "@/data/vocabulary";
+
+type VocabulariesResponse = {
+  data: VocabularyItem[];
+  source?: "database" | "fallback";
+};
 
 const allCategoriesLabel = "Semua";
 const categoryOptions = [allCategoriesLabel, ...vocabularyCategories] as const;
 
 export function VocabularyExplorer() {
+  const [vocabularyItems, setVocabularyItems] = useState<VocabularyItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<
     VocabularyCategory | typeof allCategoriesLabel
   >(allCategoriesLabel);
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    async function loadVocabularies() {
+      try {
+        const response = await fetch("/api/vocabularies");
+        const payload = (await response.json()) as VocabulariesResponse;
+        setVocabularyItems(payload.data ?? []);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadVocabularies();
+  }, []);
 
   const filteredItems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -35,7 +56,7 @@ export function VocabularyExplorer() {
 
       return matchesQuery && matchesCategory;
     });
-  }, [activeCategory, query]);
+  }, [activeCategory, query, vocabularyItems]);
 
   const featuredItem = vocabularyItems[0];
 
@@ -79,13 +100,13 @@ export function VocabularyExplorer() {
           <div className="rounded-[24px] border border-[#dee1e6] bg-[#f7f7f7] p-5">
             <p className="text-sm font-semibold text-[#7c828a]">Kata hari ini</p>
             <p className="mt-4 text-4xl font-normal text-[#0a0b0d]">
-              {featuredItem.kataTolaki}
+              {featuredItem?.kataTolaki ?? "-"}
             </p>
             <p className="mt-2 text-lg font-semibold text-[#2d9184]">
-              {featuredItem.artiIndonesia}
+              {featuredItem?.artiIndonesia ?? ""}
             </p>
             <p className="mt-4 text-sm leading-6 text-[#5b616e]">
-              {featuredItem.kalimatIndonesia}
+              {featuredItem?.kalimatIndonesia ?? ""}
             </p>
           </div>
         </div>
@@ -219,53 +240,58 @@ export function VocabularyExplorer() {
           <p className="text-sm font-semibold text-[#5b616e]">
             {filteredItems.length} kata ditemukan
           </p>
-          <p className="hidden text-sm text-[#7c828a] sm:block">
-            Sumber awal: kamus_tolaki_final.xlsx
-          </p>
         </div>
 
-        <section className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {filteredItems.map((item) => (
-            <article
-              className="rounded-[20px] border border-[#dee1e6] bg-white p-5 transition hover:border-[#73a920] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
-              key={item.id}
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-2xl font-normal text-[#0a0b0d]">
-                    {item.kataTolaki}
-                  </p>
-                  <p className="mt-1 text-base font-semibold text-[#2d9184]">
-                    {item.artiIndonesia}
-                  </p>
-                </div>
-                <span className="shrink-0 rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
-                  {item.kategori}
-                </span>
-              </div>
-
-              <div className="mt-5 border-t border-[#eef0f3] pt-4">
-                <p className="text-sm leading-6 text-[#0a0b0d]">
-                  {item.kalimatTolaki}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-[#5b616e]">
-                  {item.kalimatIndonesia}
-                </p>
-              </div>
-            </article>
-          ))}
-        </section>
-
-        {filteredItems.length === 0 ? (
-          <div className="mt-8 rounded-[24px] border border-[#dee1e6] bg-[#f7f7f7] px-5 py-10 text-center">
-            <p className="text-lg font-semibold text-[#0a0b0d]">
-              Belum ada kata yang cocok.
-            </p>
-            <p className="mt-2 text-sm text-[#5b616e]">
-              Coba kata lain atau pilih filter Semua.
-            </p>
+        {isLoading ? (
+          <div className="grid min-h-64 place-items-center">
+            <Loader2 className="h-6 w-6 animate-spin text-[#de990e]" />
           </div>
-        ) : null}
+        ) : (
+          <>
+            <section className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {filteredItems.map((item) => (
+                <article
+                  className="rounded-[20px] border border-[#dee1e6] bg-white p-5 transition hover:border-[#73a920] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
+                  key={item.id}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-2xl font-normal text-[#0a0b0d]">
+                        {item.kataTolaki}
+                      </p>
+                      <p className="mt-1 text-base font-semibold text-[#2d9184]">
+                        {item.artiIndonesia}
+                      </p>
+                    </div>
+                    <span className="shrink-0 rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
+                      {item.kategori}
+                    </span>
+                  </div>
+
+                  <div className="mt-5 border-t border-[#eef0f3] pt-4">
+                    <p className="text-sm leading-6 text-[#0a0b0d]">
+                      {item.kalimatTolaki}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-[#5b616e]">
+                      {item.kalimatIndonesia}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </section>
+
+            {filteredItems.length === 0 ? (
+              <div className="mt-8 rounded-[24px] border border-[#dee1e6] bg-[#f7f7f7] px-5 py-10 text-center">
+                <p className="text-lg font-semibold text-[#0a0b0d]">
+                  Belum ada kata yang cocok.
+                </p>
+                <p className="mt-2 text-sm text-[#5b616e]">
+                  Coba kata lain atau pilih filter Semua.
+                </p>
+              </div>
+            ) : null}
+          </>
+        )}
       </section>
     </main>
   );

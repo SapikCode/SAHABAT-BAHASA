@@ -263,9 +263,6 @@ function CorrectionModal({
             <p className="text-sm font-bold uppercase tracking-[0.06em] text-[#de990e]">
               Benarkan jawaban
             </p>
-            <h2 className="mt-1 text-lg font-semibold text-[#0a0b0d]">
-              Kata yang anda tambahkan membuat bot semakin pintar
-            </h2>
           </div>
           <button
             aria-label="Tutup modal"
