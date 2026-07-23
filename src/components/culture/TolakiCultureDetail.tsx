@@ -79,12 +79,22 @@ export function TolakiCultureDetail({ slug }: { slug: string }) {
       </header>
 
       <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-12">
-        <article className="mx-auto max-w-3xl">
+        <article className="mx-auto max-w-5xl">
+          {topic.hero_image_url ? (
+            <div className="mb-8 overflow-hidden rounded-[24px] bg-[#f7f7f7]">
+              <img
+                alt={topic.title}
+                className="aspect-[16/9] w-full object-cover"
+                src={topic.hero_image_url}
+              />
+            </div>
+          ) : null}
+
           <div className="border-b border-[#eef0f3] pb-8">
             <span className="rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
               {topic.category}
             </span>
-            <h1 className="mt-4 text-[38px] font-normal leading-tight text-[#0a0b0d] md:text-[56px]">
+            <h1 className="mt-4 text-[30px] font-normal leading-tight text-[#0a0b0d] md:text-[56px]">
               {topic.title}
             </h1>
             <p className="mt-5 text-lg leading-8 text-[#5b616e]">
@@ -107,13 +117,10 @@ export function TolakiCultureDetail({ slug }: { slug: string }) {
           <div className="mt-10 space-y-12">
             {topic.sections.map((section, index) => (
               <section id={`section-${index}`} key={section.title}>
-                <p className="text-sm font-semibold text-[#1376ba]">
-                  Bagian {index + 1}
-                </p>
-                <h2 className="mt-2 text-3xl font-semibold leading-tight text-[#0a0b0d]">
+                <h2 className="mt-2 text-2xl font-semibold leading-tight text-[#0a0b0d]">
                   {section.title}
                 </h2>
-                <p className="mt-5 whitespace-pre-line text-lg leading-9 text-[#374151]">
+                <p className="mt-2 whitespace-pre-line text-lg leading-9 text-[#374151]">
                   {section.body}
                 </p>
               </section>

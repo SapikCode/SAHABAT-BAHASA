@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CheckCircle2,
   Edit3,
+  ImageOff,
   Landmark,
   Loader2,
   Plus,
   Search,
   Trash2,
+  Upload,
   X,
 } from "lucide-react";
 import {
@@ -18,6 +20,7 @@ import {
 } from "@/data/tolakiCulture";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { showErrorToast, showSuccessToast } from "@/lib/app-toast";
+import { compressImageToWebp } from "@/lib/image-compress";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 type CultureRow = {
@@ -106,6 +109,8 @@ export function TolakiCultureAdmin() {
   const [isSaving, setIsSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [setupRequired, setSetupRequired] = useState(false);
   const [setupMessage, setSetupMessage] = useState("");
 
@@ -231,6 +236,49 @@ export function TolakiCultureAdmin() {
       ...form,
       sections: form.sections.filter((_, sectionIndex) => sectionIndex !== index),
     });
+  }
+
+  async function handleImageUpload(file: File) {
+    if (!supabase) {
+      showErrorToast("Konfigurasi Supabase belum lengkap.");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      showErrorToast("File harus berupa gambar.");
+      return;
+    }
+
+    setIsUploadingImage(true);
+
+    try {
+      const compressed = await compressImageToWebp(file, { targetKB: 100 });
+      const path = `tolaki-culture/${crypto.randomUUID()}.webp`;
+      const { error: uploadError } = await supabase.storage
+        .from("culture-images")
+        .upload(path, compressed, {
+          upsert: true,
+          contentType: "image/webp",
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage.from("culture-images").getPublicUrl(path);
+
+      setForm((current) =>
+        current ? { ...current, hero_image_url: data.publicUrl } : current,
+      );
+      const sizeKB = Math.round(compressed.size / 1024);
+      showSuccessToast(`Gambar berhasil diunggah (${sizeKB} KB).`);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Gagal mengunggah gambar.";
+      showErrorToast(message);
+    } finally {
+      setIsUploadingImage(false);
+    }
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -595,16 +643,57 @@ export function TolakiCultureAdmin() {
 
                 <label className="block">
                   <span className="mb-2 block text-sm font-bold text-[#30323a]">
-                    Hero image URL
+                    Gambar cover
                   </span>
-                  <input
-                    className="h-12 w-full rounded-2xl border border-[#e8e1d4] px-4 text-sm outline-none focus:border-[#de990e] focus:ring-4 focus:ring-[#de990e]/10"
-                    onChange={(event) =>
-                      setForm({ ...form, hero_image_url: event.target.value })
-                    }
-                    placeholder="Opsional"
-                    value={form.hero_image_url}
-                  />
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                    <div className="flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl border border-dashed border-[#e8e1d4] bg-[#fffaf2] sm:w-48">
+                      {form.hero_image_url ? (
+                        <img
+                          alt=""
+                          className="h-full w-full object-cover"
+                          src={form.hero_image_url}
+                        />
+                      ) : (
+                        <ImageOff className="h-6 w-6 text-[#c9bda3]" />
+                      )}
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <input
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(event) => {
+                          const file = event.target.files?.[0];
+                          if (file) {
+                            void handleImageUpload(file);
+                          }
+                          event.target.value = "";
+                        }}
+                        ref={fileInputRef}
+                        type="file"
+                      />
+                      <button
+                        className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#f7f3ea] px-5 text-sm font-bold text-[#4a4338] transition hover:bg-[#f5ead7] disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={isUploadingImage}
+                        onClick={() => fileInputRef.current?.click()}
+                        type="button"
+                      >
+                        {isUploadingImage ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Upload className="h-4 w-4" />
+                        )}
+                        {isUploadingImage ? "Mengunggah..." : "Upload gambar"}
+                      </button>
+                      <input
+                        className="h-11 w-full rounded-2xl border border-[#e8e1d4] px-4 text-sm outline-none focus:border-[#de990e] focus:ring-4 focus:ring-[#de990e]/10"
+                        onChange={(event) =>
+                          setForm({ ...form, hero_image_url: event.target.value })
+                        }
+                        placeholder="Atau tempel URL gambar di sini"
+                        value={form.hero_image_url}
+                      />
+                    </div>
+                  </div>
                 </label>
 
                 <section className="rounded-2xl border border-[#eadfcd] p-4">

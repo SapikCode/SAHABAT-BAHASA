@@ -174,40 +174,51 @@ export function TolakiCultureExplorer() {
           <section className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {filteredTopics.map((topic) => (
               <Link
-                className="group flex min-h-[260px] flex-col justify-between rounded-[8px] border border-[#dee1e6] bg-white p-5 transition hover:-translate-y-1 hover:border-[#de990e] hover:shadow-[0_14px_30px_rgba(10,11,13,0.08)]"
+                className="group flex min-h-[260px] flex-col justify-between overflow-hidden rounded-[8px] border border-[#dee1e6] bg-white transition hover:-translate-y-1 hover:border-[#de990e] hover:shadow-[0_14px_30px_rgba(10,11,13,0.08)]"
                 href={`/budaya-tolaki/${topic.slug}`}
                 key={topic.id}
               >
-                <span>
-                  <span className="inline-flex rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
-                    {topic.category}
+                {topic.hero_image_url ? (
+                  <div className="aspect-[16/9] w-full overflow-hidden bg-[#f7f7f7]">
+                    <img
+                      alt=""
+                      className="h-full w-full object-cover transition group-hover:scale-105"
+                      src={topic.hero_image_url}
+                    />
+                  </div>
+                ) : null}
+                <span className="flex flex-1 flex-col justify-between p-5">
+                  <span>
+                    <span className="inline-flex rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
+                      {topic.category}
+                    </span>
+                    <span className="mt-4 block text-2xl font-semibold leading-8 text-[#0a0b0d]">
+                      {topic.title}
+                    </span>
+                    <span className="mt-3 line-clamp-3 block text-sm leading-6 text-[#5b616e]">
+                      {topic.summary}
+                    </span>
+                    <span className="mt-4 flex flex-wrap gap-2">
+                      {topic.sections.slice(0, 3).map((section) => (
+                        <span
+                          className="rounded-full bg-[#f7f7f7] px-3 py-1 text-xs font-semibold text-[#7c828a]"
+                          key={section.title}
+                        >
+                          {section.title}
+                        </span>
+                      ))}
+                    </span>
                   </span>
-                  <span className="mt-4 block text-2xl font-semibold leading-8 text-[#0a0b0d]">
-                    {topic.title}
-                  </span>
-                  <span className="mt-3 line-clamp-3 block text-sm leading-6 text-[#5b616e]">
-                    {topic.summary}
-                  </span>
-                  <span className="mt-4 flex flex-wrap gap-2">
-                    {topic.sections.slice(0, 3).map((section) => (
-                      <span
-                        className="rounded-full bg-[#f7f7f7] px-3 py-1 text-xs font-semibold text-[#7c828a]"
-                        key={section.title}
-                      >
-                        {section.title}
-                      </span>
-                    ))}
-                  </span>
-                </span>
 
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#de990e]">
-                  Baca detail
-                  <ArrowRight
-                    aria-hidden="true"
-                    className="transition group-hover:translate-x-1"
-                    size={17}
-                    strokeWidth={2.5}
-                  />
+                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#de990e]">
+                    Baca detail
+                    <ArrowRight
+                      aria-hidden="true"
+                      className="transition group-hover:translate-x-1"
+                      size={17}
+                      strokeWidth={2.5}
+                    />
+                  </span>
                 </span>
               </Link>
             ))}
