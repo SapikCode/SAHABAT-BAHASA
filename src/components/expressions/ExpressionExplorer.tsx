@@ -8,6 +8,7 @@ import {
   Search,
   ShieldCheck,
   SlidersHorizontal,
+  Smile,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -57,7 +58,7 @@ export function ExpressionExplorer() {
             href="/"
           >
             <ArrowLeft aria-hidden="true" size={17} strokeWidth={2.4} />
-            Chatbot
+            Beranda
           </Link>
           <div className="flex items-center gap-3">
             <span className="grid size-9 place-items-center rounded-full bg-[#de990e] text-white">
@@ -81,18 +82,17 @@ export function ExpressionExplorer() {
               Pepatah dan nilai budaya
             </p>
             <h1 className="mt-3 max-w-3xl text-[38px] font-normal leading-tight text-[#0a0b0d] md:text-[56px]">
-              Ungkapan Tolaki untuk memahami nasihat leluhur.
+              Ungkapan Tradisional Bahasa Tolaki
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-[#5b616e]">
-              Pelajari pesan, perumpamaan, dan pepatah yang mencerminkan nilai
-              sopan santun, persatuan, keluarga, dan kebijaksanaan lokal.
+              pelajari makna ungkapan, pepatah, dan pribahasa sebagai nilai budaya , etika, dan identitas masyarakat tolaki.
             </p>
           </div>
 
           <div className="rounded-[24px] border border-[#dee1e6] bg-[#f7f7f7] p-5">
             <div className="flex items-center gap-2 text-sm font-semibold text-[#4f7f12]">
-              <ShieldCheck aria-hidden="true" size={17} strokeWidth={2.4} />
-              Perlu validasi budaya
+              <Smile aria-hidden="true" size={17} strokeWidth={2.4} />
+              Ungkapan Hari Ini
             </div>
             <p className="mt-4 text-xl font-normal leading-8 text-[#0a0b0d]">
               {featuredItem.ungkapanTolaki}
@@ -137,11 +137,10 @@ export function ExpressionExplorer() {
 
                 return (
                   <button
-                    className={`h-10 shrink-0 rounded-full px-4 text-sm font-semibold transition ${
-                      isActive
-                        ? "bg-[#de990e] text-white"
-                        : "bg-[#f7f7f7] text-[#5b616e] hover:bg-[#f5ead7] hover:text-[#0a0b0d]"
-                    }`}
+                    className={`h-10 shrink-0 rounded-full px-4 text-sm font-semibold transition ${isActive
+                      ? "bg-[#de990e] text-white"
+                      : "bg-[#f7f7f7] text-[#5b616e] hover:bg-[#f5ead7] hover:text-[#0a0b0d]"
+                      }`}
                     key={category}
                     onClick={() =>
                       setActiveCategory(
@@ -194,17 +193,16 @@ export function ExpressionExplorer() {
 
                         return (
                           <button
-                            className={`flex h-12 items-center justify-between rounded-2xl px-4 text-left text-sm font-semibold transition ${
-                              isActive
-                                ? "bg-[#f5ead7] text-[#0a0b0d]"
-                                : "bg-white text-[#5b616e] hover:bg-[#f7f7f7]"
-                            }`}
+                            className={`flex h-12 items-center justify-between rounded-2xl px-4 text-left text-sm font-semibold transition ${isActive
+                              ? "bg-[#f5ead7] text-[#0a0b0d]"
+                              : "bg-white text-[#5b616e] hover:bg-[#f7f7f7]"
+                              }`}
                             key={category}
                             onClick={() => {
                               setActiveCategory(
                                 category as
-                                  | ExpressionCategory
-                                  | typeof allCategoriesLabel,
+                                | ExpressionCategory
+                                | typeof allCategoriesLabel,
                               );
                               setIsCategoryDrawerOpen(false);
                             }}
@@ -260,7 +258,7 @@ export function ExpressionExplorer() {
               <p className="mt-5 text-2xl font-normal leading-9 text-[#0a0b0d]">
                 {item.ungkapanTolaki}
               </p>
-              <p className="mt-3 text-base font-semibold leading-7 text-[#de990e]">
+              <p className="mt-3 text-base font-semibold leading-7 text-[#2d9184]">
                 {item.artiIndonesia}
               </p>
 

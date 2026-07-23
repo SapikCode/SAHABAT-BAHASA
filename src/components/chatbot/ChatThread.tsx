@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { quickPrompts } from "./chat-data";
 import { useScrollLock } from "@/hooks/useScrollLock";
+import { PT_Serif } from "next/font/google";
 
 export type ChatMessage = {
   id: string;
@@ -30,6 +31,14 @@ export type CorrectionPayload = {
   kata_tolaki: string;
   messageId: string;
 };
+
+export const instrumen = PT_Serif({
+  subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap'
+})
+
+
 
 function useTypingText(text: string, shouldAnimate: boolean) {
   const [displayedText, setDisplayedText] = useState(shouldAnimate ? "" : text);
@@ -63,11 +72,12 @@ function EmptyState({ onQuickPrompt }: Pick<ChatThreadProps, "onQuickPrompt">) {
     <div className="w-full text-center">
       <img
         alt=""
-        className="mx-auto h-30 w-30 md:h-40 md:w-40"
-        src="/logo-transparan.png"
+        className="mx-auto h-30 w-30 md:h-47 md:w-47"
+        src="/logo-kamori.webp"
       />
-      <h1 className="mt-3 text-[40px] font-normal leading-none text-[#0a0b0d] md:text-[52px]">
-        Sahabat Bahasa
+      <h1 className={` ${instrumen.className} -mt-6 text-[38px] font-normal leading-none text-[#0a0b0d] md:text-[46px]`}>
+        Kamori
+
       </h1>
       <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#5b616e]">
         Tanyakan arti kata, contoh kalimat, ungkapan, pepatah, atau budaya

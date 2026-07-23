@@ -115,7 +115,7 @@ export function ProfileOverview() {
             href="/"
           >
             <ArrowLeft aria-hidden="true" size={17} strokeWidth={2.4} />
-            Chatbot
+            Beranda
           </Link>
           <div className="flex items-center gap-3">
             <span className="grid size-9 place-items-center rounded-full bg-[#de990e] text-white">

@@ -33,7 +33,7 @@ export function ChatHeader({
         <Link className="flex items-center lg:hidden" href="/">
           {/* <img src='logo-sahabat-bahasa.png' className="w-14 h-14" ></img> */}
           <span className="text-lg font-semibold tracking-[-0.01em] text-[#de990e]">
-            Sahabat Bahasa
+            Kamori
           </span>
         </Link>
 

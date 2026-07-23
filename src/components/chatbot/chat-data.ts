@@ -1,6 +1,7 @@
 export const navItems = [
   { href: "/kosakata", label: "Kosakata" },
   { href: "/ungkapan", label: "Ungkapan" },
+  { href: "/budaya-tolaki", label: "Budaya Tolaki" },
   { href: "/cerita-budaya", label: "Cerita Budaya" },
   { href: "/kuis", label: "Kuis" },
   { href: "/profil", label: "Profil" },

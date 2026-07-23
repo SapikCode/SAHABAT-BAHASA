@@ -48,7 +48,7 @@ export function VocabularyExplorer() {
             href="/"
           >
             <ArrowLeft aria-hidden="true" size={17} strokeWidth={2.4} />
-            Chatbot
+            Beranda
           </Link>
           <div className="flex items-center gap-3">
             <span className="grid size-9 place-items-center rounded-full bg-[#de990e] text-white">
@@ -81,7 +81,7 @@ export function VocabularyExplorer() {
             <p className="mt-4 text-4xl font-normal text-[#0a0b0d]">
               {featuredItem.kataTolaki}
             </p>
-            <p className="mt-2 text-lg font-semibold text-[#de990e]">
+            <p className="mt-2 text-lg font-semibold text-[#2d9184]">
               {featuredItem.artiIndonesia}
             </p>
             <p className="mt-4 text-sm leading-6 text-[#5b616e]">
@@ -124,11 +124,10 @@ export function VocabularyExplorer() {
 
                 return (
                   <button
-                    className={`h-10 shrink-0 rounded-full px-4 text-sm font-semibold transition ${
-                      isActive
-                        ? "bg-[#de990e] text-white"
-                        : "bg-[#f7f7f7] text-[#5b616e] hover:bg-[#f5ead7] hover:text-[#0a0b0d]"
-                    }`}
+                    className={`h-10 shrink-0 rounded-full px-4 text-sm font-semibold transition ${isActive
+                      ? "bg-[#de990e] text-white"
+                      : "bg-[#f7f7f7] text-[#5b616e] hover:bg-[#f5ead7] hover:text-[#0a0b0d]"
+                      }`}
                     key={category}
                     onClick={() =>
                       setActiveCategory(
@@ -181,17 +180,16 @@ export function VocabularyExplorer() {
 
                         return (
                           <button
-                            className={`flex h-12 items-center justify-between rounded-2xl px-4 text-left text-sm font-semibold transition ${
-                              isActive
-                                ? "bg-[#f5ead7] text-[#0a0b0d]"
-                                : "bg-white text-[#5b616e] hover:bg-[#f7f7f7]"
-                            }`}
+                            className={`flex h-12 items-center justify-between rounded-2xl px-4 text-left text-sm font-semibold transition ${isActive
+                              ? "bg-[#f5ead7] text-[#0a0b0d]"
+                              : "bg-white text-[#5b616e] hover:bg-[#f7f7f7]"
+                              }`}
                             key={category}
                             onClick={() => {
                               setActiveCategory(
                                 category as
-                                  | VocabularyCategory
-                                  | typeof allCategoriesLabel,
+                                | VocabularyCategory
+                                | typeof allCategoriesLabel,
                               );
                               setIsCategoryDrawerOpen(false);
                             }}
@@ -237,7 +235,7 @@ export function VocabularyExplorer() {
                   <p className="text-2xl font-normal text-[#0a0b0d]">
                     {item.kataTolaki}
                   </p>
-                  <p className="mt-1 text-base font-semibold text-[#de990e]">
+                  <p className="mt-1 text-base font-semibold text-[#2d9184]">
                     {item.artiIndonesia}
                   </p>
                 </div>

@@ -29,9 +29,9 @@ export function AppSidebar({
     <aside className="fixed left-0 top-0 z-[70] hidden h-screen w-[280px] shrink-0 border-r border-[#eef0f3] bg-white lg:flex lg:flex-col">
       <div className="flex h-16 items-center border-b border-[#eef0f3] px-5">
         <Link className="flex items-center" href="/">
-          <img src='logo-sahabat-bahasa.png' className="w-14 h-14" ></img>
-          <span className="text-lg font-semibold tracking-[-0.01em] text-[#de990e]">
-            Sahabat Bahasa
+          <img src='logo-kamori.webp' className="w-14 h-14 mt-1" ></img>
+          <span className="text-lg ml-1 font-semibold tracking-[-0.01em] text-[#2d9184]">
+            Kamori
           </span>
         </Link>
       </div>
@@ -69,11 +69,10 @@ export function AppSidebar({
 
                 return (
                   <div
-                    className={`group flex items-center gap-2 rounded-2xl border px-3 py-2 transition ${
-                      isActive
-                        ? "border-[#f0d2a1] bg-[#fff8ec]"
-                        : "border-transparent hover:border-[#eef0f3] hover:bg-[#f7f7f7]"
-                    }`}
+                    className={`group flex items-center gap-2 rounded-2xl border px-3 py-2 transition ${isActive
+                      ? "border-[#f0d2a1] bg-[#fff8ec]"
+                      : "border-transparent hover:border-[#eef0f3] hover:bg-[#f7f7f7]"
+                      }`}
                     key={conversation.id}
                   >
                     <button

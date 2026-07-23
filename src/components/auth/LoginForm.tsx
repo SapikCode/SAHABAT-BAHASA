@@ -83,11 +83,11 @@ export function LoginForm() {
         <img
           alt="Sahabat Bahasa"
           className="h-14 w-14"
-          src="/logo-sahabat-bahasa.png"
+          src="logo-kamori.webp"
         />
         <div>
           <p className="text-sm font-semibold text-[#de990e]">
-            Sahabat Bahasa
+            Kamori
           </p>
           <h1 className="text-2xl font-bold text-[#101114]">
             {mode === "login" ? "Masuk akun" : "Buat akun"}
@@ -99,8 +99,8 @@ export function LoginForm() {
         <div className="mb-5 grid grid-cols-2 rounded-full bg-[#f7f3ea] p-1">
           <button
             className={`h-10 rounded-full text-sm font-semibold transition ${mode === "login"
-                ? "bg-white text-[#101114] shadow-sm"
-                : "text-[#7b6e5d]"
+              ? "bg-white text-[#101114] shadow-sm"
+              : "text-[#7b6e5d]"
               }`}
             onClick={() => setMode("login")}
             type="button"
@@ -109,8 +109,8 @@ export function LoginForm() {
           </button>
           <button
             className={`h-10 rounded-full text-sm font-semibold transition ${mode === "register"
-                ? "bg-white text-[#101114] shadow-sm"
-                : "text-[#7b6e5d]"
+              ? "bg-white text-[#101114] shadow-sm"
+              : "text-[#7b6e5d]"
               }`}
             onClick={() => setMode("register")}
             type="button"
