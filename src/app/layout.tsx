@@ -6,7 +6,7 @@ const appName = "Chatbot Tolaki";
 const appDescription =
   "Chatbot pintar untuk belajar bahasa, kosakata, ungkapan, cerita, dan budaya Tolaki.";
 const appUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-const appIcon = "/logo-transparan.png";
+const appIcon = "/logo-kamori.webp";
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
