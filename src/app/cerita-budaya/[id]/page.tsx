@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { ArrowLeft, Clock, Film, Play } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -55,6 +56,36 @@ async function loadCultureVideos(): Promise<CultureVideo[]> {
   } catch {
     return fallbackCultureVideos;
   }
+}
+
+export async function generateMetadata({
+  params,
+}: CultureVideoDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const videos = await loadCultureVideos();
+  const video = videos.find((item) => item.id === id);
+
+  if (!video) {
+    return { title: "Cerita Budaya" };
+  }
+
+  return {
+    title: video.title,
+    description: video.description,
+    alternates: {
+      canonical: `/cerita-budaya/${id}`,
+    },
+    openGraph: {
+      title: `${video.title} | Cerita Budaya Tolaki`,
+      description: video.description,
+      url: `/cerita-budaya/${id}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${video.title} | Cerita Budaya Tolaki`,
+      description: video.description,
+    },
+  };
 }
 
 export default async function CultureVideoDetailPage({

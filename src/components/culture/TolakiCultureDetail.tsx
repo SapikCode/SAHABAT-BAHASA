@@ -1,61 +1,9 @@
-"use client";
-
-import { ArrowLeft, Landmark, Loader2 } from "lucide-react";
+import { ArrowLeft, Landmark } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Footer } from "@/components/Footer";
 import type { TolakiCultureTopic } from "@/data/tolakiCulture";
 
-type CultureResponse = {
-  data: TolakiCultureTopic | null;
-};
-
-export function TolakiCultureDetail({ slug }: { slug: string }) {
-  const [topic, setTopic] = useState<TolakiCultureTopic | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadTopic() {
-      try {
-        const response = await fetch(
-          `/api/cultures?slug=${encodeURIComponent(slug)}`,
-        );
-        const payload = (await response.json()) as CultureResponse;
-        setTopic(payload.data);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadTopic();
-  }, [slug]);
-
-  if (isLoading) {
-    return (
-      <main className="grid min-h-screen place-items-center bg-white">
-        <Loader2 className="h-6 w-6 animate-spin text-[#de990e]" />
-      </main>
-    );
-  }
-
-  if (!topic) {
-    return (
-      <main className="grid min-h-screen place-items-center bg-white px-4 text-center">
-        <div>
-          <p className="text-xl font-semibold text-[#0a0b0d]">
-            Materi budaya belum ditemukan.
-          </p>
-          <Link
-            className="mt-5 inline-flex h-11 items-center rounded-full bg-[#de990e] px-5 text-sm font-semibold text-white"
-            href="/budaya-tolaki"
-          >
-            Kembali ke Budaya Tolaki
-          </Link>
-        </div>
-      </main>
-    );
-  }
-
+export function TolakiCultureDetail({ topic }: { topic: TolakiCultureTopic }) {
   return (
     <main className="min-h-screen bg-white text-[#0a0b0d]">
       <header className="border-b border-[#eef0f3] bg-white">

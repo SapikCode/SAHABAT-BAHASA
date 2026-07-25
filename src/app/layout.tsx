@@ -70,6 +70,26 @@ export const viewport: Viewport = {
   themeColor: "#166534",
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: appName,
+      url: appUrl,
+      description: appDescription,
+      inLanguage: "id-ID",
+    },
+    {
+      "@type": "EducationalOrganization",
+      name: appName,
+      url: appUrl,
+      logo: `${appUrl}${appIcon}`,
+      description: appDescription,
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -78,6 +98,10 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body>
+        <script
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          type="application/ld+json"
+        />
         {children}
         <AppToaster />
       </body>

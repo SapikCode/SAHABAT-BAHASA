@@ -8,7 +8,9 @@ export type VocabularyCategory =
   | "Waktu"
   | "Tubuh"
   | "Hewan"
-  | "Makanan";
+  | "Makanan"
+  | "Angka"
+  | "Sifat";
 
 export type VocabularyItem = {
   id: string;
@@ -425,4 +427,6 @@ export const vocabularyCategories: VocabularyCategory[] = [
   "Tubuh",
   "Hewan",
   "Makanan",
+  "Angka",
+  "Sifat",
 ];

@@ -19,13 +19,21 @@ type CulturesResponse = {
   source?: "database" | "fallback";
 };
 
-export function TolakiCultureExplorer() {
-  const [topics, setTopics] = useState<TolakiCultureTopic[]>([]);
+export function TolakiCultureExplorer({
+  initialTopics = [],
+}: {
+  initialTopics?: TolakiCultureTopic[];
+}) {
+  const [topics, setTopics] = useState<TolakiCultureTopic[]>(initialTopics);
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("Semua");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(initialTopics.length === 0);
 
   useEffect(() => {
+    if (initialTopics.length > 0) {
+      return;
+    }
+
     async function loadTopics() {
       try {
         const response = await fetch("/api/cultures");
@@ -37,6 +45,7 @@ export function TolakiCultureExplorer() {
     }
 
     loadTopics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const categories = useMemo(
