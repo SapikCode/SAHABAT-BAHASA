@@ -19,6 +19,7 @@ type QuizQuestionPayload = {
   category?: string;
   level?: string;
   explanation?: string | null;
+  image_url?: string | null;
   is_published?: boolean;
   answers?: QuizAnswerPayload[];
 };
@@ -66,6 +67,7 @@ function validatePayload(payload: QuizQuestionPayload) {
       category: parseText(payload.category, "Kosakata"),
       level: parseText(payload.level, "Dasar"),
       explanation: parseOptionalText(payload.explanation),
+      image_url: parseOptionalText(payload.image_url),
       is_published: payload.is_published ?? true,
     },
     answers,
@@ -91,7 +93,7 @@ export async function GET(request: Request) {
   let query = supabase
     .from("quiz_questions")
     .select(
-      "id,question,category,level,explanation,is_published,created_at,updated_at,quiz_answers(id,answer_text,is_correct,sort_order)",
+      "id,question,category,level,explanation,image_url,is_published,created_at,updated_at,quiz_answers(id,answer_text,is_correct,sort_order)",
       { count: "exact" },
     )
     .order("created_at", { ascending: true })

@@ -28,6 +28,7 @@ function normalizeQuizQuestion(row: Record<string, unknown>): QuizQuestion {
     category: (row.category as QuizCategory) ?? "Kosakata",
     level: (row.level as QuizLevel) ?? "Dasar",
     prompt: String(row.question ?? ""),
+    imageUrl: typeof row.image_url === "string" ? row.image_url : null,
     choices: answers.map((answer) => answer.answer_text),
     answerIndex,
     explanation: String(row.explanation ?? ""),
@@ -41,7 +42,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from("quiz_questions")
       .select(
-        "id,question,category,level,explanation,is_published,created_at,quiz_answers(id,answer_text,is_correct,sort_order)",
+        "id,question,category,level,explanation,image_url,is_published,created_at,quiz_answers(id,answer_text,is_correct,sort_order)",
       )
       .eq("is_published", true)
       .order("created_at", { ascending: true })

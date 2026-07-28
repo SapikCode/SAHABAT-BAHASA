@@ -11,6 +11,7 @@ export type QuizQuestion = {
   category: QuizCategory;
   level: QuizLevel;
   prompt: string;
+  imageUrl?: string | null;
   choices: string[];
   answerIndex: number;
   explanation: string;

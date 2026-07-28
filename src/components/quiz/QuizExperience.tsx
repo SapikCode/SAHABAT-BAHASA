@@ -252,6 +252,16 @@ export function QuizExperience() {
                 {currentQuestion.prompt}
               </h2>
 
+              {currentQuestion.imageUrl ? (
+                <div className="mt-5 overflow-hidden rounded-[20px] border border-[#dee1e6] bg-[#f7f7f7]">
+                  <img
+                    alt={`Gambar soal: ${currentQuestion.prompt}`}
+                    className="max-h-[360px] w-full object-contain"
+                    src={currentQuestion.imageUrl}
+                  />
+                </div>
+              ) : null}
+
               <div className="mt-7 grid gap-3">
                 {currentQuestion.choices.map((choice, choiceIndex) => {
                   const isSelected = answers[currentQuestion.id] === choiceIndex;
@@ -693,6 +703,15 @@ function ReviewView({
                   <h3 className="mt-2 text-lg font-semibold leading-7 text-[#0a0b0d]">
                     {question.prompt}
                   </h3>
+                  {question.imageUrl ? (
+                    <div className="mt-4 overflow-hidden rounded-[18px] border border-[#dee1e6] bg-[#f7f7f7]">
+                      <img
+                        alt={`Gambar soal: ${question.prompt}`}
+                        className="max-h-64 w-full object-contain"
+                        src={question.imageUrl}
+                      />
+                    </div>
+                  ) : null}
                   <div className="mt-4 grid gap-2 text-sm leading-6">
                     <p className="text-[#5b616e]">
                       Jawabanmu:{" "}

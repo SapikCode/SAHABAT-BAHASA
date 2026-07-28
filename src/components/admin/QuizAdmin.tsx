@@ -1,18 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CheckCircle2,
   Edit3,
+  ImageOff,
   Loader2,
   Plus,
   Search,
   Trash2,
+  Upload,
   X,
 } from "lucide-react";
 import { quizCategories } from "@/data/quiz";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { showErrorToast, showSuccessToast } from "@/lib/app-toast";
+import { compressImageToWebp } from "@/lib/image-compress";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 type QuizAnswerRow = {
@@ -28,6 +31,7 @@ type QuizQuestionRow = {
   category: string;
   level: string;
   explanation: string | null;
+  image_url: string | null;
   is_published: boolean;
   created_at: string;
   updated_at: string;
@@ -52,6 +56,7 @@ type FormState = {
   category: string;
   level: string;
   explanation: string;
+  image_url: string;
   is_published: boolean;
   answers: FormAnswer[];
 };
@@ -64,6 +69,7 @@ const emptyForm: FormState = {
   category: "Kosakata",
   level: "Dasar",
   explanation: "",
+  image_url: "",
   is_published: true,
   answers: [
     { answer_text: "", is_correct: true },
@@ -104,6 +110,8 @@ export function QuizAdmin() {
   const [isSaving, setIsSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useScrollLock(Boolean(form));
 
@@ -203,6 +211,54 @@ export function QuizAdmin() {
         is_correct: answerIndex === index,
       })),
     });
+  }
+
+  async function handleImageUpload(file: File) {
+    if (!supabase) {
+      showErrorToast("Konfigurasi Supabase belum lengkap.");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      showErrorToast("File harus berupa gambar.");
+      return;
+    }
+
+    setIsUploadingImage(true);
+
+    try {
+      const compressed = await compressImageToWebp(file, {
+        maxWidth: 1200,
+        maxHeight: 900,
+        targetKB: 120,
+      });
+      const path = `quiz-questions/${crypto.randomUUID()}.webp`;
+      const { error: uploadError } = await supabase.storage
+        .from("quiz-images")
+        .upload(path, compressed, {
+          upsert: true,
+          contentType: "image/webp",
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage.from("quiz-images").getPublicUrl(path);
+
+      setForm((current) =>
+        current ? { ...current, image_url: data.publicUrl } : current,
+      );
+      showSuccessToast(
+        `Gambar soal berhasil diunggah (${Math.round(compressed.size / 1024)} KB).`,
+      );
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Gagal mengunggah gambar.";
+      showErrorToast(message);
+    } finally {
+      setIsUploadingImage(false);
+    }
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -422,6 +478,7 @@ export function QuizAdmin() {
                             category: row.category,
                             level: row.level,
                             explanation: row.explanation ?? "",
+                            image_url: row.image_url ?? "",
                             is_published: row.is_published,
                             answers: normalizeAnswers(row.quiz_answers),
                           })
@@ -518,6 +575,73 @@ export function QuizAdmin() {
                     required
                     value={form.question}
                   />
+                </label>
+
+                <label className="block">
+                  <span className="mb-2 block text-sm font-bold text-[#30323a]">
+                    Gambar soal <span className="font-semibold text-[#8d8170]">(opsional)</span>
+                  </span>
+                  <div className="flex flex-col gap-3 rounded-2xl border border-[#eadfcd] bg-[#fffdf9] p-3 sm:flex-row sm:items-start">
+                    <div className="flex h-36 w-full items-center justify-center overflow-hidden rounded-2xl border border-dashed border-[#e8e1d4] bg-white sm:w-52">
+                      {form.image_url ? (
+                        <img
+                          alt="Preview gambar soal"
+                          className="h-full w-full object-cover"
+                          src={form.image_url}
+                        />
+                      ) : (
+                        <ImageOff className="h-6 w-6 text-[#c9bda3]" />
+                      )}
+                    </div>
+
+                    <div className="flex-1 space-y-2">
+                      <input
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(event) => {
+                          const file = event.target.files?.[0];
+                          if (file) {
+                            void handleImageUpload(file);
+                          }
+                          event.target.value = "";
+                        }}
+                        ref={fileInputRef}
+                        type="file"
+                      />
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#f7f3ea] px-5 text-sm font-bold text-[#4a4338] transition hover:bg-[#edf6df] disabled:cursor-not-allowed disabled:opacity-60"
+                          disabled={isUploadingImage}
+                          onClick={() => fileInputRef.current?.click()}
+                          type="button"
+                        >
+                          {isUploadingImage ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Upload className="h-4 w-4" />
+                          )}
+                          {isUploadingImage ? "Mengunggah..." : "Upload gambar"}
+                        </button>
+                        {form.image_url ? (
+                          <button
+                            className="h-11 rounded-full border border-[#eadfcd] px-4 text-sm font-bold text-[#9a3f2f] transition hover:border-[#9a3f2f]"
+                            onClick={() => setForm({ ...form, image_url: "" })}
+                            type="button"
+                          >
+                            Hapus gambar
+                          </button>
+                        ) : null}
+                      </div>
+                      <input
+                        className="h-11 w-full rounded-2xl border border-[#e8e1d4] px-4 text-sm outline-none focus:border-[#73a920] focus:ring-4 focus:ring-[#73a920]/10"
+                        onChange={(event) =>
+                          setForm({ ...form, image_url: event.target.value })
+                        }
+                        placeholder="Atau tempel URL gambar di sini"
+                        value={form.image_url}
+                      />
+                    </div>
+                  </div>
                 </label>
 
                 <div className="grid gap-4 md:grid-cols-2">
