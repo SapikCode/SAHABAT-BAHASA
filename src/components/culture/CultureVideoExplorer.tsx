@@ -145,17 +145,16 @@ export function CultureVideoExplorer() {
 
                 return (
                   <button
-                    className={`h-10 shrink-0 rounded-full px-4 text-sm font-semibold transition ${
-                      isActive
-                        ? "bg-[#de990e] text-white"
-                        : "bg-[#f7f7f7] text-[#5b616e] hover:bg-[#f5ead7] hover:text-[#0a0b0d]"
-                    }`}
+                    className={`h-10 shrink-0 rounded-full px-4 text-sm font-semibold transition ${isActive
+                      ? "bg-[#de990e] text-white"
+                      : "bg-[#f7f7f7] text-[#5b616e] hover:bg-[#f5ead7] hover:text-[#0a0b0d]"
+                      }`}
                     key={category}
                     onClick={() =>
                       setActiveCategory(
                         category as
-                          | CultureVideoCategory
-                          | typeof allCategoriesLabel,
+                        | CultureVideoCategory
+                        | typeof allCategoriesLabel,
                       )
                     }
                     type="button"
@@ -204,17 +203,16 @@ export function CultureVideoExplorer() {
 
                         return (
                           <button
-                            className={`flex h-12 items-center justify-between rounded-2xl px-4 text-left text-sm font-semibold transition ${
-                              isActive
-                                ? "bg-[#f5ead7] text-[#0a0b0d]"
-                                : "bg-white text-[#5b616e] hover:bg-[#f7f7f7]"
-                            }`}
+                            className={`flex h-12 items-center justify-between rounded-2xl px-4 text-left text-sm font-semibold transition ${isActive
+                              ? "bg-[#f5ead7] text-[#0a0b0d]"
+                              : "bg-white text-[#5b616e] hover:bg-[#f7f7f7]"
+                              }`}
                             key={category}
                             onClick={() => {
                               setActiveCategory(
                                 category as
-                                  | CultureVideoCategory
-                                  | typeof allCategoriesLabel,
+                                | CultureVideoCategory
+                                | typeof allCategoriesLabel,
                               );
                               setIsCategoryDrawerOpen(false);
                             }}
@@ -254,74 +252,74 @@ export function CultureVideoExplorer() {
             <Loader2 className="h-6 w-6 animate-spin text-[#de990e]" />
           </div>
         ) : (
-        <>
-        <section className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {filteredVideos.map((video) => (
-            <Link
-              className="group overflow-hidden rounded-[22px] border border-[#dee1e6] bg-white transition hover:border-[#73a920] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
-              href={getCultureVideoHref(video)}
-              key={video.id}
-            >
-              <span className="relative block aspect-video bg-[#dee1e6]">
-                <img
-                  alt=""
-                  className="h-full w-full object-cover"
-                  src={getCultureVideoThumbnail(video)}
-                />
-                <span className="absolute inset-0 flex items-center justify-center bg-black/20 text-white">
-                  <span className="grid size-12 place-items-center rounded-full bg-white/90 text-[#de990e] transition group-hover:scale-105">
-                    <Play
-                      aria-hidden="true"
-                      fill="currentColor"
-                      size={20}
-                      strokeWidth={2.2}
+          <>
+            <section className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {filteredVideos.map((video) => (
+                <Link
+                  className="group overflow-hidden  rounded-[22px] border border-[#dee1e6] bg-white transition hover:border-[#73a920] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
+                  href={getCultureVideoHref(video)}
+                  key={video.id}
+                >
+                  <span className="relative block aspect-video bg-[#dee1e6]">
+                    <img
+                      alt=""
+                      className="h-full w-full object-cover"
+                      src={getCultureVideoThumbnail(video)}
                     />
-                  </span>
-                </span>
-              </span>
-
-              <span className="block p-5">
-                <span className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
-                    {video.category}
-                  </span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-[#e5f0f9] px-3 py-1 text-xs font-semibold text-[#1376ba]">
-                    <Clock aria-hidden="true" size={13} strokeWidth={2.4} />
-                    {video.duration}
-                  </span>
-                </span>
-                <span className="mt-4 block text-xl font-semibold leading-7 text-[#0a0b0d]">
-                  {video.title}
-                </span>
-                <span className="mt-2 block text-sm leading-6 text-[#5b616e]">
-                  {video.description}
-                </span>
-                <span className="mt-4 flex flex-wrap gap-2">
-                  {video.learningPoints.map((point) => (
-                    <span
-                      className="rounded-full bg-[#f7f7f7] px-3 py-1 text-xs font-semibold text-[#7c828a]"
-                      key={point}
-                    >
-                      {point}
+                    <span className="absolute inset-0 flex items-center justify-center bg-black/20 text-white">
+                      <span className="grid size-12 place-items-center rounded-full bg-white/90 text-[#de990e] transition group-hover:scale-105">
+                        <Play
+                          aria-hidden="true"
+                          fill="currentColor"
+                          size={20}
+                          strokeWidth={2.2}
+                        />
+                      </span>
                     </span>
-                  ))}
-                </span>
-              </span>
-            </Link>
-          ))}
-        </section>
+                  </span>
 
-        {filteredVideos.length === 0 ? (
-          <div className="mt-8 rounded-[24px] border border-[#dee1e6] bg-[#f7f7f7] px-5 py-10 text-center">
-            <p className="text-lg font-semibold text-[#0a0b0d]">
-              Belum ada video yang cocok.
-            </p>
-            <p className="mt-2 text-sm text-[#5b616e]">
-              Coba kata lain atau pilih filter Semua.
-            </p>
-          </div>
-        ) : null}
-        </>
+                  <span className="block p-5">
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
+                        {video.category}
+                      </span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[#e5f0f9] px-3 py-1 text-xs font-semibold text-[#1376ba]">
+                        <Clock aria-hidden="true" size={13} strokeWidth={2.4} />
+                        {video.duration}
+                      </span>
+                    </span>
+                    <span className="mt-4 line-clamp-2 text-xl font-semibold leading-7 text-[#0a0b0d]">
+                      {video.title}
+                    </span>
+                    <span className="mt-2  line-clamp-2 text-sm leading-6 text-[#5b616e]">
+                      {video.description}
+                    </span>
+                    <span className="mt-4 flex flex-wrap gap-2">
+                      {video.learningPoints.map((point) => (
+                        <span
+                          className="rounded-full bg-[#f7f7f7] px-3 py-1 text-xs font-semibold text-[#7c828a]"
+                          key={point}
+                        >
+                          {point}
+                        </span>
+                      ))}
+                    </span>
+                  </span>
+                </Link>
+              ))}
+            </section>
+
+            {filteredVideos.length === 0 ? (
+              <div className="mt-8 rounded-[24px] border border-[#dee1e6] bg-[#f7f7f7] px-5 py-10 text-center">
+                <p className="text-lg font-semibold text-[#0a0b0d]">
+                  Belum ada video yang cocok.
+                </p>
+                <p className="mt-2 text-sm text-[#5b616e]">
+                  Coba kata lain atau pilih filter Semua.
+                </p>
+              </div>
+            ) : null}
+          </>
         )}
       </section>
     </main>
