@@ -762,9 +762,16 @@ export async function POST(request: Request) {
       })),
     });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Terjadi kesalahan tidak dikenal.";
+    // Detail kegagalan provider dicatat di server oleh client OpenRouter, tetapi
+    // tidak boleh diteruskan ke browser karena dapat memuat log teknis sensitif.
+    console.error("Chat API gagal.", error);
 
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json(
+      {
+        error:
+          "Maaf, chatbot sedang mengalami gangguan. Silakan coba beberapa saat lagi.",
+      },
+      { status: 500 },
+    );
   }
 }

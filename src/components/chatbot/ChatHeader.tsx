@@ -3,6 +3,14 @@ import { AccountMenu } from "./AccountMenu";
 import { navItems } from "./chat-data";
 import type { ChatConversation } from "./chat-history-types";
 import { MobileNavDrawer } from "./MobileNavDrawer";
+import { PT_Serif } from "next/font/google";
+
+
+const instrumen = PT_Serif({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  display: 'swap'
+})
 
 type ChatHeaderProps = {
   displayName?: string | null;
@@ -31,8 +39,7 @@ export function ChatHeader({
     <header className="relative z-[100] flex h-16 shrink-0 items-center justify-between border-b border-[#eef0f3] bg-white px-4 md:px-6">
       <div className="flex items-center justify-between gap-3">
         <Link className="flex items-center lg:hidden" href="/">
-          {/* <img src='logo-sahabat-bahasa.png' className="w-14 h-14" ></img> */}
-          <span className="text-lg font-semibold tracking-[-0.01em] text-[#de990e]">
+          <span className={` ${instrumen.className}  ml-1 text-lg font-semibold tracking-[-0.01em] text-[#2d9184]`}>
             Kamori
           </span>
         </Link>

@@ -18,6 +18,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 OPENROUTER_API_KEY=
 OPENROUTER_MODEL=deepseek/deepseek-v4-flash
+OPENROUTER_FALLBACK_MODELS=openai/gpt-oss-120b,meta-llama/llama-3.3-70b-instruct
 OPENROUTER_EMBEDDING_MODEL=openai/text-embedding-3-small
 OPENROUTER_SITE_URL=http://localhost:3000
 OPENROUTER_APP_NAME=Chatbot Tolaki

@@ -146,6 +146,12 @@ function MessageBubble({
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [isActionOpen]);
 
+  useEffect(() => {
+    if (isActionOpen) {
+      actionRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  }, [isActionOpen]);
+
   return (
     <article
       className={`flex gap-3 ${isAssistant ? "justify-start" : "justify-end"}`}
@@ -193,7 +199,7 @@ function MessageBubble({
             </button>
 
             {isActionOpen ? (
-              <div className="absolute bottom-9 left-0 z-[60] min-w-36 rounded-2xl border border-[#eef0f3] bg-white p-1 shadow-[0_14px_36px_rgba(10,11,13,0.12)]">
+              <div className="mt-1 min-w-36 rounded-2xl border border-[#eef0f3] bg-white p-1 shadow-[0_14px_36px_rgba(10,11,13,0.12)]">
                 <button
                   className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold text-[#0a0b0d] transition hover:bg-[#f7f7f7]"
                   onClick={() => {
@@ -401,7 +407,7 @@ export function ChatThread({
             <EmptyState onQuickPrompt={onQuickPrompt} />
           </div>
         ) : (
-          <div className="flex flex-1 flex-col gap-4 py-4">
+          <div className="flex flex-1 flex-col gap-4 py-4 pb-20 md:pb-24">
             {messages.map((message) => (
               <MessageBubble
                 key={message.id}

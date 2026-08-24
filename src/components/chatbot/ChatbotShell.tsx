@@ -19,6 +19,20 @@ function showChatErrorToast(message: string) {
   showErrorToast(message, "Chat belum bisa merespons");
 }
 
+function getSafeChatErrorMessage(error: unknown) {
+  if (!(error instanceof Error)) {
+    return "Gagal menghubungi chatbot. Silakan coba lagi.";
+  }
+
+  // Pesan dari endpoint chat seharusnya sudah aman. Ini menjadi pengaman kedua
+  // bila respons lama atau error jaringan menyertakan detail provider.
+  if (/openrouter|provider|api\/v1|\{\s*"?error"?/i.test(error.message)) {
+    return "Maaf, chatbot sedang mengalami gangguan. Silakan coba beberapa saat lagi.";
+  }
+
+  return error.message || "Gagal menghubungi chatbot. Silakan coba lagi.";
+}
+
 export function ChatbotShell() {
   const supabase = useMemo(() => createBrowserSupabaseClient(), []);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(
@@ -446,11 +460,7 @@ export function ChatbotShell() {
         }
       }
     } catch (requestError) {
-      const message =
-        requestError instanceof Error
-          ? requestError.message
-          : "Gagal menghubungi chatbot.";
-      showChatErrorToast(message);
+      showChatErrorToast(getSafeChatErrorMessage(requestError));
     } finally {
       setIsLoading(false);
     }

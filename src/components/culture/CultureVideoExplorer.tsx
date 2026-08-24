@@ -288,7 +288,7 @@ export function CultureVideoExplorer() {
                         {video.duration}
                       </span>
                     </span>
-                    <span className="mt-4 line-clamp-2 text-xl font-semibold leading-7 text-[#0a0b0d]">
+                    <span className="mt-4 line-clamp-2   text-xl font-semibold leading-7 text-[#0a0b0d]">
                       {video.title}
                     </span>
                     <span className="mt-2  line-clamp-2 text-sm leading-6 text-[#5b616e]">

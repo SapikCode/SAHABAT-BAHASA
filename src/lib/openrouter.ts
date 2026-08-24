@@ -24,6 +24,13 @@ export function getOpenRouterChatModel() {
   return process.env.OPENROUTER_MODEL ?? "deepseek/deepseek-v4-flash";
 }
 
+export function getOpenRouterFallbackChatModels() {
+  return (process.env.OPENROUTER_FALLBACK_MODELS ?? "")
+    .split(",")
+    .map((model) => model.trim())
+    .filter((model) => model.length > 0 && model !== getOpenRouterChatModel());
+}
+
 function getOpenRouterHeaders() {
   const apiKey = process.env.OPENROUTER_API_KEY;
 
@@ -74,34 +81,50 @@ export async function createChatCompletion(messages: Array<{
   role: "system" | "user" | "assistant";
   content: string;
 }>, maxTokens = 2048) {
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: getOpenRouterHeaders(),
-    body: JSON.stringify({
-      model: getOpenRouterChatModel(),
-      messages,
-      temperature: 0.25,
-      max_tokens: maxTokens,
-      provider: {
-        order: ["groq"]
+  const models = [getOpenRouterChatModel(), ...getOpenRouterFallbackChatModels()];
+  const failures: Array<{ model: string; status?: number; detail: string }> = [];
+
+  for (const model of models) {
+    try {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: getOpenRouterHeaders(),
+        body: JSON.stringify({
+          model,
+          messages,
+          temperature: 0.25,
+          max_tokens: maxTokens,
+        }),
+      });
+
+      if (!response.ok) {
+        failures.push({
+          model,
+          status: response.status,
+          detail: (await response.text()).slice(0, 1_000),
+        });
+        continue;
       }
-    }),
-  });
 
+      const data = (await response.json()) as OpenRouterChatResponse;
+      const content = data.choices?.[0]?.message?.content;
 
-  if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(`OpenRouter chat gagal: ${response.status} ${detail}`);
+      if (content) {
+        return content;
+      }
+
+      failures.push({
+        model,
+        detail: "Respons tidak berisi jawaban.",
+      });
+    } catch (error) {
+      failures.push({
+        model,
+        detail: error instanceof Error ? error.message : "Kesalahan tidak dikenal.",
+      });
+    }
   }
 
-  const data = (await response.json()) as OpenRouterChatResponse;
-  const content = data.choices?.[0]?.message?.content;
-
-  if (!content) {
-    throw new Error(
-      `OpenRouter chat tidak mengembalikan jawaban: ${JSON.stringify(data).slice(0, 500)}`,
-    );
-  }
-
-  return content;
+  console.error("OpenRouter chat gagal untuk semua model yang dicoba.", failures);
+  throw new Error("CHAT_COMPLETION_UNAVAILABLE");
 }
