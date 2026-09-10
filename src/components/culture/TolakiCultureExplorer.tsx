@@ -180,15 +180,15 @@ export function TolakiCultureExplorer({
             <Loader2 className="h-6 w-6 animate-spin text-[#de990e]" />
           </div>
         ) : (
-          <section className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <section className="mt-6 grid items-start gap-3 md:grid-cols-2 xl:grid-cols-3">
             {filteredTopics.map((topic) => (
               <Link
-                className="group flex min-h-[260px] flex-col justify-between overflow-hidden rounded-[8px] border border-[#dee1e6] bg-white transition hover:-translate-y-1 hover:border-[#de990e] hover:shadow-[0_14px_30px_rgba(10,11,13,0.08)]"
+                className="group flex min-h-[260px] max-h-[460px] self-start flex-col overflow-hidden rounded-[8px] border border-[#dee1e6] bg-white transition hover:-translate-y-1 hover:border-[#de990e] hover:shadow-[0_14px_30px_rgba(10,11,13,0.08)] sm:max-h-[520px]"
                 href={`/budaya-tolaki/${topic.slug}`}
                 key={topic.id}
               >
                 {topic.hero_image_url ? (
-                  <div className="aspect-[16/9] w-full overflow-hidden bg-[#f7f7f7]">
+                  <div className="h-40 w-full shrink-0 overflow-hidden bg-[#f7f7f7] sm:h-48">
                     <img
                       alt=""
                       className="h-full w-full object-cover transition group-hover:scale-105"
@@ -196,21 +196,21 @@ export function TolakiCultureExplorer({
                     />
                   </div>
                 ) : null}
-                <span className="flex flex-1 flex-col justify-between p-5">
-                  <span>
+                <span className="flex min-h-0 flex-1 flex-col justify-between p-4 sm:p-5">
+                  <span className="min-h-0 overflow-hidden">
                     <span className="inline-flex rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
                       {topic.category}
                     </span>
-                    <span className="mt-4 block text-2xl font-semibold leading-8 text-[#0a0b0d]">
+                    <span className="mt-3 line-clamp-2 block max-h-14 overflow-hidden text-xl font-semibold leading-7 text-[#0a0b0d] sm:mt-4 sm:max-h-16 sm:text-2xl sm:leading-8">
                       {topic.title}
                     </span>
-                    <span className="mt-3 line-clamp-3 block text-sm leading-6 text-[#5b616e]">
+                    <span className="mt-2 line-clamp-3 block max-h-[4.5rem] overflow-hidden text-sm leading-6 text-[#5b616e] sm:mt-3">
                       {topic.summary}
                     </span>
-                    <span className="mt-4 flex flex-wrap gap-2">
+                    <span className="mt-3 flex max-h-7 flex-wrap gap-2 overflow-hidden sm:mt-4 sm:max-h-[4.5rem]">
                       {topic.sections.slice(0, 3).map((section) => (
                         <span
-                          className="rounded-full bg-[#f7f7f7] px-3 py-1 text-xs font-semibold text-[#7c828a]"
+                          className="max-w-full truncate rounded-full bg-[#f7f7f7] px-3 py-1 text-xs font-semibold text-[#7c828a]"
                           key={section.title}
                         >
                           {section.title}
@@ -219,7 +219,7 @@ export function TolakiCultureExplorer({
                     </span>
                   </span>
 
-                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#de990e]">
+                  <span className="mt-4 inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-[#de990e] sm:mt-6">
                     Baca detail
                     <ArrowRight
                       aria-hidden="true"

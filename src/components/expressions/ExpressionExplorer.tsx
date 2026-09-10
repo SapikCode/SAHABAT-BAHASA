@@ -123,10 +123,10 @@ export function ExpressionExplorer() {
               <Smile aria-hidden="true" size={17} strokeWidth={2.4} />
               Ungkapan Hari Ini
             </div>
-            <p className="mt-4 text-xl font-normal leading-8 text-[#0a0b0d]">
+            <p className="mt-4 line-clamp-2 text-xl font-normal leading-8 text-[#0a0b0d]">
               {featuredItem?.ungkapanTolaki ?? "-"}
             </p>
-            <p className="mt-3 text-sm leading-6 text-[#5b616e]">
+            <p className="mt-3 line-clamp-4 text-sm leading-6 text-[#5b616e]">
               {featuredItem?.maknaSingkat ?? ""}
             </p>
           </div>

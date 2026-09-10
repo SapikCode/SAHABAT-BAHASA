@@ -253,14 +253,14 @@ export function CultureVideoExplorer() {
           </div>
         ) : (
           <>
-            <section className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <section className="mt-5 grid items-start gap-3 md:grid-cols-2 xl:grid-cols-3">
               {filteredVideos.map((video) => (
                 <Link
-                  className="group overflow-hidden  rounded-[22px] border border-[#dee1e6] bg-white transition hover:border-[#73a920] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
+                  className="group flex max-h-[440px] self-start flex-col overflow-hidden rounded-[22px] border border-[#dee1e6] bg-white transition hover:border-[#73a920] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] sm:max-h-[500px]"
                   href={getCultureVideoHref(video)}
                   key={video.id}
                 >
-                  <span className="relative block aspect-video bg-[#dee1e6]">
+                  <span className="relative block h-40 shrink-0 bg-[#dee1e6] sm:h-48">
                     <img
                       alt=""
                       className="h-full w-full object-cover"
@@ -278,7 +278,7 @@ export function CultureVideoExplorer() {
                     </span>
                   </span>
 
-                  <span className="block p-5">
+                  <span className="block min-h-0 overflow-hidden p-4 sm:p-5">
                     <span className="flex flex-wrap items-center gap-2">
                       <span className="rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
                         {video.category}
@@ -288,16 +288,16 @@ export function CultureVideoExplorer() {
                         {video.duration}
                       </span>
                     </span>
-                    <span className="mt-4 line-clamp-2   text-xl font-semibold leading-7 text-[#0a0b0d]">
+                    <span className="mt-3 line-clamp-2 block max-h-14 overflow-hidden text-xl font-semibold leading-7 text-[#0a0b0d] sm:mt-4">
                       {video.title}
                     </span>
-                    <span className="mt-2  line-clamp-2 text-sm leading-6 text-[#5b616e]">
+                    <span className="mt-2 line-clamp-2 block max-h-12 overflow-hidden text-sm leading-6 text-[#5b616e]">
                       {video.description}
                     </span>
-                    <span className="mt-4 flex flex-wrap gap-2">
-                      {video.learningPoints.map((point) => (
+                    <span className="mt-3 flex max-h-7 flex-wrap gap-2 overflow-hidden sm:mt-4 sm:max-h-[4.5rem]">
+                      {video.learningPoints.slice(0, 3).map((point) => (
                         <span
-                          className="rounded-full bg-[#f7f7f7] px-3 py-1 text-xs font-semibold text-[#7c828a]"
+                          className="max-w-full truncate rounded-full bg-[#f7f7f7] px-3 py-1 text-xs font-semibold text-[#7c828a]"
                           key={point}
                         >
                           {point}
