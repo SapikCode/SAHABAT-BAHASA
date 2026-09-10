@@ -183,7 +183,7 @@ export function TolakiCultureExplorer({
           <section className="mt-6 grid items-start gap-3 md:grid-cols-2 xl:grid-cols-3">
             {filteredTopics.map((topic) => (
               <Link
-                className="group flex min-h-[260px] max-h-[460px] self-start flex-col overflow-hidden rounded-[8px] border border-[#dee1e6] bg-white transition hover:-translate-y-1 hover:border-[#de990e] hover:shadow-[0_14px_30px_rgba(10,11,13,0.08)] sm:max-h-[520px]"
+                className="group flex h-[460px] self-start flex-col overflow-hidden rounded-[8px] border border-[#dee1e6] bg-white transition hover:-translate-y-1 hover:border-[#de990e] hover:shadow-[0_14px_30px_rgba(10,11,13,0.08)] sm:h-[520px]"
                 href={`/budaya-tolaki/${topic.slug}`}
                 key={topic.id}
               >
@@ -195,7 +195,18 @@ export function TolakiCultureExplorer({
                       src={topic.hero_image_url}
                     />
                   </div>
-                ) : null}
+                ) : (
+                  <div className="flex h-40 w-full shrink-0 items-center justify-center bg-gradient-to-br from-[#f5ead7] via-[#f7f7f7] to-[#edf6df] sm:h-48">
+                    <span className="flex flex-col items-center gap-2 text-[#7c828a]">
+                      <span className="grid size-11 place-items-center rounded-full bg-white/80 text-[#4f7f12] shadow-sm">
+                        <Landmark aria-hidden="true" size={21} strokeWidth={2} />
+                      </span>
+                      <span className="text-xs font-semibold">
+                        Foto belum tersedia
+                      </span>
+                    </span>
+                  </div>
+                )}
                 <span className="flex min-h-0 flex-1 flex-col justify-between p-4 sm:p-5">
                   <span className="min-h-0 overflow-hidden">
                     <span className="inline-flex rounded-full bg-[#edf6df] px-3 py-1 text-xs font-semibold text-[#4f7f12]">
