@@ -2,37 +2,37 @@
 
 import {
   BookOpen,
-  CircleQuestionMark,
-  Clapperboard,
+  BotMessageSquare,
+  GraduationCap,
+  House,
+  Landmark,
   LockKeyhole,
   Loader2,
   Menu,
   MessageSquareText,
-  MessageSquareQuote,
   Plus,
   Trash2,
-  UserRound,
   X,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-import { AccountMenu } from "./AccountMenu";
-import { navItems } from "./chat-data";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { publicNavigation } from "@/components/home/public-navigation";
 import type { ChatConversation } from "./chat-history-types";
 
 const navIcons: Record<string, LucideIcon> = {
-  Kosakata: BookOpen,
-  Ungkapan: MessageSquareQuote,
-  "Cerita Budaya": Clapperboard,
-  Kuis: CircleQuestionMark,
-  Profil: UserRound,
+  Beranda: House,
+  Chatbot: BotMessageSquare,
+  "Bahasa Tolaki": BookOpen,
+  "Budaya & Tradisi": Landmark,
+  Edukasi: GraduationCap,
+  "Tentang Kami": BookOpen,
 };
 
 type MobileNavDrawerProps = {
   activeConversationId?: string | null;
   conversations?: ChatConversation[];
-  displayName?: string | null;
   isAuthChecking?: boolean;
   isHistoryLoading?: boolean;
   isLoggedIn?: boolean;
@@ -44,7 +44,6 @@ type MobileNavDrawerProps = {
 export function MobileNavDrawer({
   activeConversationId,
   conversations = [],
-  displayName,
   isAuthChecking = false,
   isHistoryLoading = false,
   isLoggedIn = false,
@@ -53,18 +52,23 @@ export function MobileNavDrawer({
   onSelectConversation,
 }: MobileNavDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => setIsMounted(true), []);
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button
-        className="flex h-10 items-center gap-2 rounded-full bg-[#eef0f3] px-4 text-sm font-semibold text-[#0a0b0d]"
+        aria-label="Buka menu navigasi dan riwayat chat"
+        aria-expanded={isOpen}
+        className="flex size-8 items-center justify-center rounded-full border border-[#5a3a20]/25 bg-[#fff9ed]/80 text-[#4b2f1b] sm:size-10"
         onClick={() => setIsOpen(true)}
         type="button"
       >
         <Menu aria-hidden="true" size={18} strokeWidth={2.4} />
-        Menu
       </button>
 
+      {isMounted ? createPortal(<>
       <div
         aria-hidden={!isOpen}
         className={`fixed inset-0 z-[80] bg-black/45 transition-opacity duration-300 ${isOpen ? "opacity-100" : "pointer-events-none opacity-0"
@@ -201,13 +205,14 @@ export function MobileNavDrawer({
 
         <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto p-4">
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.04em] text-[#7c828a]">
-            Menu belajar
+            Navigasi utama
           </p>
-          {navItems.map((item) => {
+          {publicNavigation.map((item) => {
             const Icon = navIcons[item.label] ?? BookOpen;
 
             return (
               <Link
+                aria-current={item.href === "/chatbot" ? "page" : undefined}
                 className="flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium text-[#0a0b0d] transition hover:bg-[#f7f7f7]"
                 href={item.href}
                 key={item.href}
@@ -222,25 +227,8 @@ export function MobileNavDrawer({
           })}
         </nav>
 
-        <div className="border-t border-[#eef0f3] p-4">
-          {isLoggedIn ? (
-            <div className="flex justify-center">
-              <AccountMenu
-                displayName={displayName}
-                onNavigate={() => setIsOpen(false)}
-              />
-            </div>
-          ) : (
-            <Link
-              className="flex h-11 items-center justify-center rounded-full bg-[#de990e] text-sm font-semibold text-white transition hover:bg-[#bd7d08]"
-              href="/login"
-              onClick={() => setIsOpen(false)}
-            >
-              Masuk
-            </Link>
-          )}
-        </div>
       </aside>
+      </>, document.body) : null}
     </div>
   );
 }

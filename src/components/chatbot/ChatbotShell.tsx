@@ -3,8 +3,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { AppSidebar } from "./AppSidebar";
+import { PublicPageHeader } from "@/components/home/PublicPageHeader";
 import { ChatComposer } from "./ChatComposer";
 import { ChatHeader } from "./ChatHeader";
+import { MobileNavDrawer } from "./MobileNavDrawer";
 import {
   ChatThread,
   type ChatMessage,
@@ -33,7 +35,7 @@ function getSafeChatErrorMessage(error: unknown) {
   return error.message || "Gagal menghubungi chatbot. Silakan coba lagi.";
 }
 
-export function ChatbotShell() {
+export function ChatbotShell({ initialPrompt = "" }: { initialPrompt?: string }) {
   const supabase = useMemo(() => createBrowserSupabaseClient(), []);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(
     null,
@@ -48,6 +50,8 @@ export function ChatbotShell() {
   const [userId, setUserId] = useState<string | null>(null);
   const loadingHistoryUserIdRef = useRef<string | null>(null);
   const loadedHistoryUserIdRef = useRef<string | null>(null);
+  const initialPromptSentRef = useRef(false);
+  const authenticatedUserIdRef = useRef<string | null>(null);
   const isLoggedIn = Boolean(userId);
 
   const getAccessToken = useCallback(async () => {
@@ -173,17 +177,22 @@ export function ChatbotShell() {
       const user = session?.user;
 
       if (!user) {
+        const wasLoggedIn = Boolean(authenticatedUserIdRef.current);
+        authenticatedUserIdRef.current = null;
         loadingHistoryUserIdRef.current = null;
         loadedHistoryUserIdRef.current = null;
         setActiveConversationId(null);
         setConversations([]);
         setDisplayName(null);
         setIsAuthChecking(false);
-        setMessages([]);
+        if (wasLoggedIn) {
+          setMessages([]);
+        }
         setUserId(null);
         return;
       }
 
+      authenticatedUserIdRef.current = user.id;
       const metadata = user.user_metadata ?? {};
       const name =
         metadata.display_name ??
@@ -364,7 +373,7 @@ export function ChatbotShell() {
     );
   }
 
-  async function sendMessage(content: string) {
+  const sendMessage = useCallback(async (content: string) => {
     const trimmedContent = content.trim();
 
     if (!trimmedContent || isLoading) {
@@ -464,23 +473,39 @@ export function ChatbotShell() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [activeConversationId, isLoading, messages, saveHistoryMessages]);
+
+  useEffect(() => {
+    if (!initialPrompt || initialPromptSentRef.current) {
+      return;
+    }
+
+    initialPromptSentRef.current = true;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("prompt");
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+    void sendMessage(initialPrompt);
+  }, [initialPrompt, sendMessage]);
 
   return (
-    <main className="flex h-dvh overflow-hidden bg-white text-[#0a0b0d]">
-      <AppSidebar
-        activeConversationId={activeConversationId}
-        conversations={conversations}
-        displayName={displayName}
-        isAuthChecking={isAuthChecking}
-        isHistoryLoading={isHistoryLoading}
-        isLoggedIn={isLoggedIn}
-        onDeleteConversation={deleteConversation}
-        onNewChat={startNewChat}
-        onSelectConversation={loadConversation}
+    <main className="flex h-dvh flex-col overflow-hidden bg-white text-[#0a0b0d]">
+      <PublicPageHeader
+        activeHref="/chatbot"
+        mobileMenu={
+          <MobileNavDrawer
+            activeConversationId={activeConversationId}
+            conversations={conversations}
+            isAuthChecking={isAuthChecking}
+            isHistoryLoading={isHistoryLoading}
+            isLoggedIn={isLoggedIn}
+            onDeleteConversation={deleteConversation}
+            onNewChat={startNewChat}
+            onSelectConversation={loadConversation}
+          />
+        }
       />
-      <section className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden bg-white lg:ml-[280px]">
-        <ChatHeader
+      <div className="flex min-h-0 flex-1">
+        <AppSidebar
           activeConversationId={activeConversationId}
           conversations={conversations}
           displayName={displayName}
@@ -491,15 +516,18 @@ export function ChatbotShell() {
           onNewChat={startNewChat}
           onSelectConversation={loadConversation}
         />
-        <ChatThread
-          isLoading={isLoading}
-          isThreadLoading={isConversationLoading}
-          messages={messages}
-          onQuickPrompt={sendMessage}
-          onSubmitCorrection={submitCorrection}
-        />
-        <ChatComposer isLoading={isLoading} onSendMessage={sendMessage} />
-      </section>
+        <section className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-white lg:ml-[280px]">
+          <ChatHeader />
+          <ChatThread
+            isLoading={isLoading}
+            isThreadLoading={isConversationLoading}
+            messages={messages}
+            onQuickPrompt={sendMessage}
+            onSubmitCorrection={submitCorrection}
+          />
+          <ChatComposer isLoading={isLoading} onSendMessage={sendMessage} />
+        </section>
+      </div>
     </main>
   );
 }

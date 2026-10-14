@@ -16,6 +16,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ChatbotPage() {
-  return <ChatbotShell />;
+export default async function ChatbotPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ prompt?: string | string[] }>;
+}) {
+  const { prompt } = await searchParams;
+  const initialPrompt = typeof prompt === "string" ? prompt.trim().slice(0, 500) : "";
+
+  return <ChatbotShell initialPrompt={initialPrompt} />;
 }

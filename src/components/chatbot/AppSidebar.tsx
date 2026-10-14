@@ -26,15 +26,7 @@ export function AppSidebar({
   onSelectConversation,
 }: AppSidebarProps) {
   return (
-    <aside className="fixed left-0 top-0 z-[70] hidden h-screen w-[280px] shrink-0 border-r border-[#eef0f3] bg-white lg:flex lg:flex-col">
-      <div className="flex h-16 items-center border-b border-[#eef0f3] px-5">
-        <Link className="flex items-center" href="/">
-          <img src='logo-kamori.webp' className="w-14 h-14 mt-1" ></img>
-          <span className="text-lg ml-1 font-semibold tracking-[-0.01em] text-[#2d9184]">
-            Kamori
-          </span>
-        </Link>
-      </div>
+    <aside className="fixed left-0 top-24 z-30 hidden h-[calc(100dvh-6rem)] w-[280px] shrink-0 border-r border-[#eef0f3] bg-white lg:flex lg:flex-col">
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
         <div className="mb-3 flex items-center justify-between">

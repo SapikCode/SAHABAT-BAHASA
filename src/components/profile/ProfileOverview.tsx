@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ArrowLeft,
   BarChart3,
   BookOpenCheck,
   Check,
@@ -12,6 +11,7 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
+import { PublicPageHeader } from "@/components/home/PublicPageHeader";
 import { useEffect, useMemo, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import {
@@ -107,26 +107,8 @@ export function ProfileOverview() {
   }, [quizResults]);
 
   return (
-    <main className="min-h-screen bg-white pt-16 text-[#0a0b0d]">
-      <header className="fixed left-0 top-0 z-50 w-full border-b border-[#eef0f3] bg-white">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 md:px-6">
-          <Link
-            className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-[#5b616e] transition hover:bg-[#f7f7f7] hover:text-[#0a0b0d]"
-            href="/"
-          >
-            <ArrowLeft aria-hidden="true" size={17} strokeWidth={2.4} />
-            Beranda
-          </Link>
-          <div className="flex items-center gap-3">
-            <span className="grid size-9 place-items-center rounded-full bg-[#de990e] text-white">
-              <BarChart3 aria-hidden="true" size={18} strokeWidth={2.5} />
-            </span>
-            <span className="text-sm font-semibold text-[#de990e]">
-              Profil
-            </span>
-          </div>
-        </div>
-      </header>
+    <main className="min-h-screen bg-white pt-16 text-[#0a0b0d] lg:pt-24">
+      <PublicPageHeader fixed />
 
       <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-12">
         <div>

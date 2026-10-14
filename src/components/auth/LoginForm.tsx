@@ -78,7 +78,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-5 py-10">
+    <div className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-md flex-col justify-center px-5 py-10 lg:min-h-[calc(100dvh-6rem)]">
       <div className="mb-8 flex items-center gap-3">
         <img
           alt="Sahabat Bahasa"

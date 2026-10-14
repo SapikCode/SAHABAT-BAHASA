@@ -7,6 +7,7 @@ import { LogOut, UserRound } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
 type AccountMenuProps = {
+  compactOnMobile?: boolean;
   displayName?: string | null;
   onNavigate?: () => void;
 };
@@ -15,7 +16,7 @@ function getInitial(displayName?: string | null) {
   return displayName?.trim().slice(0, 1).toUpperCase() || "P";
 }
 
-export function AccountMenu({ displayName, onNavigate }: AccountMenuProps) {
+export function AccountMenu({ compactOnMobile = false, displayName, onNavigate }: AccountMenuProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -47,14 +48,14 @@ export function AccountMenu({ displayName, onNavigate }: AccountMenuProps) {
   return (
     <div className="relative" ref={containerRef}>
       <button
-        className="flex h-10 items-center gap-2 rounded-full border border-[#eadfcd] bg-white py-1 pl-1 pr-3 text-sm font-semibold text-[#4a4338] transition hover:border-[#de990e] hover:text-[#de990e]"
+        className={`flex items-center gap-2 rounded-full border border-[#eadfcd] bg-white py-1 pl-1 text-sm font-semibold text-[#4a4338] transition hover:border-[#de990e] hover:text-[#de990e] ${compactOnMobile ? "h-8 pr-1 sm:h-10 sm:pr-3" : "h-10 pr-3"}`}
         onClick={() => setIsOpen((value) => !value)}
         type="button"
       >
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#fff3dc] text-sm font-black text-[#de990e]">
+        <span className={`grid shrink-0 place-items-center rounded-full bg-[#fff3dc] text-sm font-black text-[#de990e] ${compactOnMobile ? "size-6 sm:size-8" : "size-8"}`}>
           {getInitial(displayName)}
         </span>
-        <span className="max-w-28 truncate">{displayName ?? "Profil"}</span>
+        <span className={`${compactOnMobile ? "hidden sm:inline" : ""} max-w-28 truncate`}>{displayName ?? "Profil"}</span>
       </button>
 
       {isOpen ? (

@@ -63,21 +63,21 @@ export function HomeAuthAction() {
 
   if (isChecking) {
     return (
-      <div className="hidden h-10 w-24 animate-pulse rounded-full bg-[#f1eee8] sm:block" />
+      <div className="h-8 w-16 animate-pulse rounded-full bg-[#f1eee8] sm:h-10 sm:w-24" />
     );
   }
 
   if (isLoggedIn) {
     return (
-      <div className="hidden sm:block">
-        <AccountMenu displayName={displayName} />
+      <div>
+        <AccountMenu compactOnMobile displayName={displayName} />
       </div>
     );
   }
 
   return (
     <Link
-      className="hidden h-10 items-center rounded-full bg-[#de990e] px-5 text-sm font-semibold text-white transition hover:bg-[#bd7d08] sm:flex"
+      className="flex h-8 items-center rounded-full bg-[#4b2e19] px-3 text-xs font-semibold text-white transition hover:bg-[#70491f] sm:h-10 sm:px-5 sm:text-sm"
       href="/login"
     >
       Masuk

@@ -1,33 +1,19 @@
-import { ArrowLeft, Landmark } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Footer } from "@/components/Footer";
+import { PublicPageHeader } from "@/components/home/PublicPageHeader";
 import type { TolakiCultureTopic } from "@/data/tolakiCulture";
 
 export function TolakiCultureDetail({ topic }: { topic: TolakiCultureTopic }) {
   return (
     <main className="min-h-screen bg-white text-[#0a0b0d]">
-      <header className="border-b border-[#eef0f3] bg-white">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 md:px-6">
-          <Link
-            className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-[#5b616e] transition hover:bg-[#f7f7f7] hover:text-[#0a0b0d]"
-            href="/budaya-tolaki"
-          >
-            <ArrowLeft aria-hidden="true" size={17} strokeWidth={2.4} />
-            Budaya Tolaki
-          </Link>
-          <div className="flex items-center gap-3">
-            <span className="grid size-9 place-items-center rounded-full bg-[#de990e] text-white">
-              <Landmark aria-hidden="true" size={18} strokeWidth={2.5} />
-            </span>
-            <span className="text-sm font-semibold text-[#de990e]">
-              Detail Budaya
-            </span>
-          </div>
-        </div>
-      </header>
+      <PublicPageHeader activeHref="/budaya-tolaki" />
 
       <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-12">
         <article className="mx-auto max-w-5xl">
+          <Link className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-[#76562f] hover:underline" href="/budaya-tolaki">
+            <ArrowLeft aria-hidden="true" size={17} /> Kembali ke Budaya Tolaki
+          </Link>
           {topic.hero_image_url ? (
             <div className="mb-8 overflow-hidden rounded-[24px] bg-[#f7f7f7]">
               <img
